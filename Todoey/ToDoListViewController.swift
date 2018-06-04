@@ -33,5 +33,23 @@ class ToDoListViewController: UITableViewController {
         return cell
     }
 
+    
+    //MARK: Tableview Delegate Methods
+    
+    //TODO: Actions when item is tapped
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //print(itemArray[indexPath.row])
+        
+        // Deselect row after it is tapped
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        // Add\remove checkmark when cell tapped
+        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .none
+        } else {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        }
+        
+    }
 }
 
