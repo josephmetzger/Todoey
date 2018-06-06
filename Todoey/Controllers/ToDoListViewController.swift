@@ -13,30 +13,20 @@ class ToDoListViewController: UITableViewController {
     // Create itemArray from Item class
     var itemArray = [Item]()
     
-    var defaults = UserDefaults.standard
+    // Create data file path for data save director
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Creat file path to directory
+        
+        
+        print(dataFilePath)
 
-        //Validate and load data from UserData
-//        if let items = defaults.array(forKey: "ToDoListArray") as? [String]
-//            itemArray = items
-        
-        let newItem = Item()
-        newItem.title = "Item 1"
-        itemArray.append(newItem)
-        
-        let newItem2 = Item()
-        newItem2.title = "Item 2"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Item 3"
-        itemArray.append(newItem3)
-        
-        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
-            itemArray = items
-        }
+        //Load data
+
+        loadItems()
         
     }
     
@@ -91,14 +81,15 @@ class ToDoListViewController: UITableViewController {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
+        // Write and reload
+        saveDataItems()
+        
         // Long way:
 //        if itemArray[indexPath.row].done == false {
 //            itemArray[indexPath.row].done = true
 //        } else {
 //            itemArray[indexPath.row].done = false
 //        }
-        
-        tableView.reloadData()
         
     }
     
@@ -121,11 +112,8 @@ class ToDoListViewController: UITableViewController {
             newItem.title = textField.text!
             self.itemArray.append(newItem)
             
-            // Save updated array to UserDefaults
-            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
-            
-            // Reload table view
-            self.tableView.reloadData()
+            // Write and reload
+            self.saveDataItems()
             
         }
         
@@ -144,6 +132,32 @@ class ToDoListViewController: UITableViewController {
         
     }
     
+    // Save updated array to UserDefaults and reload
+    func saveDataItems() {
+        
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("Error encoding item array: \(error)")
+        }
+        
+        tableView.reloadData()
+        
+    }
+    
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+            itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Decoding error: \(error)")
+            }
+        }
+    }
     
     
 }
