@@ -13,16 +13,13 @@ class ToDoListViewController: UITableViewController {
     // Create itemArray from Item class
     var itemArray = [Item]()
     
-    // Create data file path for data save director
+    // Create data file and set path for data save directory
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Creat file path to directory
-        
-        
-        print(dataFilePath)
+        //print(dataFilePath)
 
         //Load data
 
